@@ -1,0 +1,36 @@
+@use '../../../../../style/focus';
+@use '../../../../../style/input';
+
+@layer ods {
+  .datepicker-control {
+    display: inline-grid;
+    position: relative;
+    grid-template-columns: 1fr max-content;
+    align-items: center;
+
+    &:focus-within {
+      @include focus.ods-focus();
+
+      border-radius: var(--ods-border-radius-sm);
+    }
+
+    &__input {
+      padding-right: calc(input.$ods-input-field-horizontal-padding * 4);
+
+      // TODO remove :not
+      &:not(#\9):focus-within { /* stylelint-disable-line selector-id-pattern */
+        outline: 0;
+      }
+
+      &--open {
+        border-color: var(--ods-color-form-element-border-hover-default);
+      }
+    }
+
+    &__icon {
+      position: absolute;
+      right: input.$ods-input-field-horizontal-padding;
+      color: var(--ods-color-primary-500);
+    }
+  }
+}

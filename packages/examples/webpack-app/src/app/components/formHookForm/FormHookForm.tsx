@@ -1,6 +1,7 @@
 import {
   Button,
   Checkbox, CheckboxControl, CheckboxGroup, CheckboxLabel,
+  Datepicker, DatepickerControl, DatepickerContent, DatepickerLabel,
   FormField, FormFieldError, FormFieldHelper, FormFieldLabel,
   Input,
   Password,
@@ -16,6 +17,7 @@ import styles from './formHookForm.scss';
 type FormData = {
   checkboxAlone: string,
   checkboxGroup: string[],
+  datepicker: Date,
   input: string,
   password: string,
   quantity: string,
@@ -27,6 +29,7 @@ type FormData = {
 const defaultValue: FormData = {
   checkboxAlone: 'checkbox alone',
   checkboxGroup: ['grouped checkbox 1'],
+  datepicker: new Date(),
   input: 'default input',
   password: 'default password',
   quantity: '42',
@@ -128,6 +131,27 @@ function FormHookForm(): ReactElement {
               </CheckboxLabel>
             </Checkbox>
           </CheckboxGroup>
+        )} />
+
+      <Controller
+        control={ control }
+        name="datepicker"
+        render={ ({ field} ) => (
+          <FormField
+            invalid={ !!errors.input }
+            required={ areAllRequired }>
+            <Datepicker
+              defaultValue={ defaultValue.datepicker }
+              onValueChange={ ({ value }) => setValue(field.name, value) }>
+              <DatepickerLabel>
+                Datepicker:
+              </DatepickerLabel>
+
+              <DatepickerControl />
+
+              <DatepickerContent />
+            </Datepicker>
+          </FormField>
         )} />
 
       <FormField invalid={ !!errors.input }>

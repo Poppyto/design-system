@@ -1,0 +1,7 @@
+@use '../../../../../style/button';
+
+$ods-datepicker-item-size: button.$ods-button-size-sm;
+
+.datepicker {
+  display: inline-block;
+}
