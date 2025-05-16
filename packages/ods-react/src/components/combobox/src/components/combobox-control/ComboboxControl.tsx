@@ -1,8 +1,7 @@
 import { Combobox as VendorCombobox, useComboboxContext } from '@ark-ui/react/combobox';
 import classNames from 'classnames';
-import { type ComponentPropsWithRef, type FC, type JSX, forwardRef, useContext } from 'react';
+import { type ComponentPropsWithRef, type FC, type JSX, forwardRef } from 'react';
 import { Input } from '../../../../input/src';
-import { ComboboxContext } from '../../context/combobox';
 import style from './comboboxControl.module.scss';
 
 interface ComboboxControlProp extends ComponentPropsWithRef<'button'> {
@@ -19,12 +18,15 @@ const ComboboxControl: FC<ComboboxControlProp> = forwardRef(({
   ...props
 }, ref): JSX.Element | null => {
   const context = useComboboxContext();
-  const { placement } = useContext(ComboboxContext);
-  if (!context) {
-    console.warn('ComboboxControl must be used within a Combobox component');
-    return null;
-  }
-  const { collection, setValue, setInputValue } = context;
+  const { setValue, setInputValue } = context;
+
+  const { getContentProps } = context;
+  const contentProps = getContentProps() as {
+    'data-placement'?: 'bottom' | 'top';
+    'data-state'?: 'open' | 'closed';
+  };
+  const placement = contentProps[ 'data-placement' ] as 'bottom' | 'top' | undefined;
+  const isOpen = contentProps[ 'data-state' ] === 'open';
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     if (event.key === 'Enter') {
@@ -44,23 +46,23 @@ const ComboboxControl: FC<ComboboxControlProp> = forwardRef(({
   return (
     <VendorCombobox.Control
       className={ classNames(
-        style['combobox-control'],
-        placement?.startsWith('bottom') && style['combobox-control--open-bottom'],
-        placement?.startsWith('top') && style['combobox-control--open-top'],
+        style[ 'combobox-control' ],
+        isOpen && placement === 'bottom' && style[ 'combobox-control--open-bottom' ],
+        isOpen && placement === 'top' && style[ 'combobox-control--open-top' ],
+        className,
       ) }
     >
       <VendorCombobox.Trigger
-        className={ classNames(style['combobox-control-trigger'], className) }
-        data-empty={ collection.size === 0 }
+        className={ classNames(style[ 'combobox-control__trigger' ], className) }
         ref={ ref }
         { ...props }>
         <VendorCombobox.Input asChild>
           <Input
-            className={ style['combobox-control-input'] }
+            className={ style[ 'combobox-control__input' ] }
             clearable={ clearable }
             loading={ loading }
-            onKeyDown={ handleInputKeyDown }
             onClear={ handleClear }
+            onKeyDown={ handleInputKeyDown }
             placeholder={ placeholder }
           />
         </VendorCombobox.Input>

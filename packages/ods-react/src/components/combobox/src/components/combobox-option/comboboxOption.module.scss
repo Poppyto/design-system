@@ -11,20 +11,16 @@
     min-height: 32px;
     color: var(--ods-color-text);
 
-    &:hover,
-    &[data-highlighted],
-    &[data-highlighted]:hover {
+    &[data-highlighted] {
       background-color: var(--ods-color-primary-100);
     }
 
     &[data-disabled] {
-      @include state.ods-is-disabled();
+      display: none;
     }
 
     &[data-state="checked"] {
-      &:hover,
-      &[data-highlighted],
-      &[data-highlighted]:hover {
+      &[data-highlighted] {
         background-color: var(--ods-color-primary-100);
       }
     }
@@ -34,13 +30,16 @@
       grid-template-columns: max-content 1fr;
     }
 
-    &--hidden {
-      display: none;
+    &--in-group {
+      padding-left: 16px;
     }
-  }
 
-  .combobox-option__highlight {
-    color: var(--ods-color-primary-700, inherit);
-    font-weight: bold;
+    &--add {
+      border-bottom: 1px solid var(--ods-color-border, #e0e0e0);
+    }
+
+    &--highlighted {
+      font-weight: bold;
+    }
   }
 }

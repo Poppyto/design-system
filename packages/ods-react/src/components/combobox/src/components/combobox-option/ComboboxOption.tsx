@@ -1,70 +1,57 @@
-import { Combobox as VendorCombobox } from '@ark-ui/react/combobox';
+import type { ComboboxCustomOptionRendererArg } from '../../context/useCombobox';
+import { Combobox as VendorCombobox, useComboboxContext } from '@ark-ui/react/combobox';
 import classNames from 'classnames';
 import { type FC, type JSX } from 'react';
-import { useCombobox } from '../../context/combobox';
-import { type ComboboxOptionItem } from '../../context/combobox';
+import { type ComboboxOptionItem, useCombobox } from '../../context/useCombobox';
+import { highlightInElement } from '../../controller/combobox';
 import style from './comboboxOption.module.scss';
 
-export type ComboboxCustomOptionRendererArg = {
-  label: string;
-  customData?: Record<string, unknown>;
-  highlightQuery?: string;
-};
-
 interface ComboboxOptionProp {
+  addNewElementLabel?: string;
   className?: string;
   customOptionRenderer?: (arg: ComboboxCustomOptionRendererArg) => JSX.Element;
+  isInGroup?: boolean;
   item: ComboboxOptionItem;
 }
 
-function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function highlightLabel(label: string, query: string): JSX.Element {
-  if (!query) {
-    return <>{label}</>;
-  }
-  const safeQuery = escapeRegExp(query);
-  const regex = new RegExp(`(${safeQuery})`, 'gi');
-  const parts = label.split(regex);
-  return <>{parts.map((part, i) =>
-    regex.test(part)
-      ? <span key={i} className={style['combobox-option__highlight']}>{part}</span>
-      : part,
-  )}</>;
-}
-
 const ComboboxOption: FC<ComboboxOptionProp> = ({
+  addNewElementLabel = 'Add ',
   className,
   customOptionRenderer,
+  isInGroup = false,
   item,
 }): JSX.Element => {
-  const { highlightResults, query } = useCombobox();
-  let content: JSX.Element | string;
-  if (item.customRendererData?.isNew) {
-    content = String(item.customRendererData.displayLabel);
+  const { highlightResults } = useCombobox();
+  const { inputValue } = useComboboxContext();
+
+  let content: React.ReactNode;
+  if (item.isNew) {
+    content = addNewElementLabel + item.value;
   } else if (customOptionRenderer) {
-    content = customOptionRenderer({
+    const rendered = customOptionRenderer({
       customData: item.customRendererData,
-      highlightQuery: highlightResults ? query : undefined,
       label: item.label,
     });
-  } else if (highlightResults && query) {
-    content = highlightLabel(item.label, query);
+    content = (highlightResults && inputValue)
+      ? highlightInElement(rendered, inputValue)
+      : rendered;
   } else {
-    content = item.label;
+    content = (highlightResults && inputValue)
+      ? highlightInElement(item.label, inputValue)
+      : item.label;
   }
+
   return (
     <VendorCombobox.Item
       className={ classNames(
-        style['combobox-option'],
-        { [style['combobox-option--disabled']]: item.disabled },
+        style[ 'combobox-option' ],
+        { [ style[ 'combobox-option--add' ] ]: item.isNew },
+        { [ style[ 'combobox-option--in-group' ] ]: isInGroup },
         className,
-      )}
+      ) }
       item={ item }>
       <VendorCombobox.ItemText>
-        {content}
+        { content }
       </VendorCombobox.ItemText>
     </VendorCombobox.Item>
   );

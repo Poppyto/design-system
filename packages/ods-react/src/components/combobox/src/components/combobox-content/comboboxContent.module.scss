@@ -1,7 +1,7 @@
 @use '../../../../../style/focus';
 @use '../../../../../style/overlay';
 
-@layer ods {
+@layer ods-organisms {
   .combobox-content {
     box-sizing: border-box;
     z-index: overlay.$ods-overlay-select-z-index;
@@ -11,13 +11,15 @@
     background: var(--ods-color-primary-000);
     padding: 0;
     color: var(--ods-color-text);
+
+    &__empty {
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      min-height: 32px;
+      color: var(--ods-color-text);
+    }
+
   }
 
-  .combobox-content__empty {
-    display: flex;
-    align-items: center;
-    padding: 0 8px;
-    min-height: 32px;
-    color: var(--ods-color-text);
-  }
 }

@@ -1,72 +1,81 @@
+import type { FC } from 'react';
 import { Combobox as VendorCombobox, useComboboxContext } from '@ark-ui/react/combobox';
 import { Portal } from '@ark-ui/react/portal';
 import classNames from 'classnames';
-import { type ComponentPropsWithRef, type FC, type JSX, forwardRef, useContext, useEffect, useRef } from 'react';
-import { type ComboboxCustomGroupRendererArg, type ComboboxGroupItem, type ComboboxOptionItem, useCombobox } from '../../context/combobox';
-import { ComboboxContext } from '../../context/combobox';
-import { isGroup } from '../../controller/combobox';
+import { type JSX, forwardRef, useRef } from 'react';
+import { useCombobox } from '../../context/useCombobox';
 import { ComboboxGroup } from '../combobox-group/ComboboxGroup';
 import { ComboboxOption } from '../combobox-option/ComboboxOption';
-import { type ComboboxCustomOptionRendererArg } from '../combobox-option/ComboboxOption';
 import style from './comboboxContent.module.scss';
 
-interface ComboboxContentProp extends ComponentPropsWithRef<'div'> {
-  customGroupRenderer?: (arg: ComboboxCustomGroupRendererArg) => JSX.Element;
-  customOptionRenderer?: (arg: ComboboxCustomOptionRendererArg) => JSX.Element;
+interface ComboboxContentProp {
+  addNewElementLabel?: string;
+  className?: string;
+
+  [ key: string ]: unknown;
 }
 
 const ComboboxContent: FC<ComboboxContentProp> = forwardRef(({
+  addNewElementLabel,
   className,
-  customGroupRenderer,
-  customOptionRenderer,
   ...props
 }, ref): JSX.Element => {
   const { collection } = useComboboxContext();
-  const { filteredItems } = useCombobox();
-  const { setPlacement } = useContext(ComboboxContext);
   const localRef = useRef<HTMLDivElement>(null);
   const contentRef = (ref as React.RefObject<HTMLDivElement>) || localRef;
+  const { customOptionRenderer, noResultLabel } = useCombobox();
 
-  useEffect(() => {
-    const node = contentRef.current;
-    if (!node || !setPlacement) {
-      return;
-    }
-    const update = (): void => setPlacement(node.getAttribute('data-placement') || 'bottom-start');
-    const observer = new MutationObserver(update);
-    observer.observe(node, { attributeFilter: ['data-placement'], attributes: true });
-    update();
-    return () => observer.disconnect();
-  }, [contentRef, setPlacement]);
+  const hasEnabledOption = collection.items.some(
+    (item: Record<string, unknown>) => typeof item === 'object' && item !== null && !('disabled' in item && item.disabled) && !('isNew' in item && item.isNew),
+  );
 
   return (
     <Portal>
       <VendorCombobox.Positioner>
         <VendorCombobox.Content
-          className={ classNames(style['combobox-content'], className) }
+          className={ classNames(style[ 'combobox-content' ], className) }
           data-empty={ collection.size === 0 }
           ref={ contentRef }
-          { ...props }>
+          { ...props }
+        >
           <VendorCombobox.List>
-            {filteredItems.map((item) =>
-              isGroup(item)
-                ? <ComboboxGroup
-                  customGroupRenderer={ customGroupRenderer }
+            { collection.size > 0 && ([...collection][ 0 ]?.isNew) ? (
+              <VendorCombobox.ItemGroup>
+                <ComboboxOption
+                  addNewElementLabel={ addNewElementLabel }
                   customOptionRenderer={ customOptionRenderer }
-                  item={ item as ComboboxGroupItem }
-                  key={ (item as ComboboxGroupItem).label } />
-                : <ComboboxOption
-                  customOptionRenderer={ customOptionRenderer }
-                  item={ item as ComboboxOptionItem }
-                  key={ (item as ComboboxOptionItem).value }
-                />,
-            )}
+                  item={ [...collection][ 0 ] }
+                  key={ [...collection][ 0 ].value }
+                />
+              </VendorCombobox.ItemGroup>
+            ) : null }
+            { collection.group().map(([groupLabel, groupItems]) => (
+              <ComboboxGroup key={ String(groupLabel) } groupLabel={ groupLabel }>
+                { groupItems
+                  .filter((item) => !item.isNew)
+                  .map((item) => (
+                    <ComboboxOption
+                      addNewElementLabel={ addNewElementLabel }
+                      customOptionRenderer={ customOptionRenderer }
+                      isInGroup={ !!groupLabel }
+                      item={ item }
+                      key={ item.value }
+                    />
+                  )) }
+              </ComboboxGroup>
+            )) }
           </VendorCombobox.List>
+
+          { !hasEnabledOption ? (
+            <div className={ style[ 'combobox-content__empty' ] }>{ noResultLabel }</div>
+          ) : null }
+
         </VendorCombobox.Content>
       </VendorCombobox.Positioner>
     </Portal>
   );
-});
+},
+);
 
 ComboboxContent.displayName = 'ComboboxContent';
 

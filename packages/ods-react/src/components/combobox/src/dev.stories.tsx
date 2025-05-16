@@ -1,8 +1,8 @@
-import { FormField } from '../../form-field/src';
-import { Combobox, ComboboxContent, ComboboxControl, type ComboboxCustomOptionRendererArg, ComboboxLabel } from '.';
-import style from './dev.module.css';
-import { useMemo, useState } from 'react';
 import { Combobox as ArkCombobox, createListCollection, Portal } from '@ark-ui/react';
+import { useMemo, useState } from 'react';
+import { Combobox, ComboboxContent, ComboboxControl, type ComboboxCustomOptionRendererArg, ComboboxLabel } from '.';
+import { FormField } from '../../form-field/src';
+import style from './dev.module.css';
 
 export default {
   component: Combobox,
@@ -21,20 +21,20 @@ export const Basic = () => {
 
   const [items, setItems] = useState(initialItems);
   const collection = useMemo(() =>
-    createListCollection({ items }),
-    [items]
+      createListCollection({ items }),
+    [items],
   );
 
   const handleInputChange = (details: { inputValue: string }) => {
     setItems(initialItems.filter(item =>
-      item.label.toLowerCase().includes(details.inputValue.toLowerCase())
+      item.label.toLowerCase().includes(details.inputValue.toLowerCase()),
     ));
   };
 
   return (
     <ArkCombobox.Root
-      collection={collection}
-      onInputValueChange={handleInputChange}
+      collection={ collection }
+      onInputValueChange={ handleInputChange }
     >
       <ArkCombobox.Label>Framework</ArkCombobox.Label>
       <ArkCombobox.Control>
@@ -46,12 +46,12 @@ export const Basic = () => {
         <ArkCombobox.Positioner>
           <ArkCombobox.Content>
             <ArkCombobox.List>
-              {collection.items.map((item) => (
-                <ArkCombobox.Item key={item.value} item={item}>
-                  <ArkCombobox.ItemText>{item.label}</ArkCombobox.ItemText>
+              { collection.items.map((item) => (
+                <ArkCombobox.Item key={ item.value } item={ item }>
+                  <ArkCombobox.ItemText>{ item.label }</ArkCombobox.ItemText>
                   <ArkCombobox.ItemIndicator>✓</ArkCombobox.ItemIndicator>
                 </ArkCombobox.Item>
-              ))}
+              )) }
             </ArkCombobox.List>
           </ArkCombobox.Content>
         </ArkCombobox.Positioner>
@@ -62,31 +62,31 @@ export const Basic = () => {
 
 export const CustomCSS = () => (
   <Combobox
-    className={ style['custom-combobox'] }
-    items={[
-      { label: 'Dog', value:'dog' },
-      { label: 'Cat', value:'cat' },
-      { label: 'Hamster', value:'hamster' },
-      { label: 'Parrot', value:'parrot' },
-      { label: 'Spider', value:'spider' },
-      { label: 'Goldfish', value:'goldfish' },
-    ]}>
-    <ComboboxLabel className={ style['custom-combobox-label'] }>Label</ComboboxLabel>
-    <ComboboxControl className={ style['custom-combobox-control'] } />
-    <ComboboxContent className={ style['custom-combobox-content'] } />
+    className={ style[ 'custom-combobox' ] }
+    items={ [
+      { label: 'Dog', value: 'dog' },
+      { label: 'Cat', value: 'cat' },
+      { label: 'Hamster', value: 'hamster' },
+      { label: 'Parrot', value: 'parrot' },
+      { label: 'Spider', value: 'spider' },
+      { label: 'Goldfish', value: 'goldfish' },
+    ] }>
+    <ComboboxLabel className={ style[ 'custom-combobox-label' ] }>Label</ComboboxLabel>
+    <ComboboxControl className={ style[ 'custom-combobox-control' ] } />
+    <ComboboxContent className={ style[ 'custom-combobox-content' ] } />
   </Combobox>
 );
 
 export const Default = () => (
   <Combobox
-    items={[
-      { label: 'Dog', value:'dog' },
-      { label: 'Cat', value:'cat' },
-      { label: 'Hamster', value:'hamster' },
-      { label: 'Parrot', value:'parrot' },
-      { label: 'Spider', value:'spider' },
-      { label: 'Goldfish', value:'goldfish' },
-    ]}>
+    items={ [
+      { label: 'Dog', value: 'dog' },
+      { label: 'Cat', value: 'cat' },
+      { label: 'Hamster', value: 'hamster' },
+      { label: 'Parrot', value: 'parrot' },
+      { label: 'Spider', value: 'spider' },
+      { label: 'Goldfish', value: 'goldfish' },
+    ] }>
     <ComboboxLabel>Label</ComboboxLabel>
     <ComboboxControl />
     <ComboboxContent />
@@ -96,14 +96,31 @@ export const Default = () => (
 export const Disabled = () => (
   <Combobox
     disabled
-    items={[
-      { label: 'Dog', value:'dog' },
-      { label: 'Cat', value:'cat' },
-      { label: 'Hamster', value:'hamster' },
-      { label: 'Parrot', value:'parrot' },
-      { label: 'Spider', value:'spider' },
-      { label: 'Goldfish', value:'goldfish' },
-    ]}>
+    items={ [
+      { label: 'Dog', value: 'dog' },
+      { label: 'Cat', value: 'cat' },
+      { label: 'Hamster', value: 'hamster' },
+      { label: 'Parrot', value: 'parrot' },
+      { label: 'Spider', value: 'spider' },
+      { label: 'Goldfish', value: 'goldfish' },
+    ] }>
+    <ComboboxLabel>Label</ComboboxLabel>
+    <ComboboxControl />
+    <ComboboxContent />
+  </Combobox>
+);
+
+export const DisabledWhileOpen = () => (
+  <Combobox
+    disabled
+    items={ [
+      { label: 'Dog', value: 'dog' },
+      { label: 'Cat', value: 'cat' },
+      { label: 'Hamster', value: 'hamster' },
+      { label: 'Parrot', value: 'parrot' },
+      { label: 'Spider', value: 'spider' },
+      { label: 'Goldfish', value: 'goldfish' },
+    ] }>
     <ComboboxLabel>Label</ComboboxLabel>
     <ComboboxControl />
     <ComboboxContent />
@@ -111,7 +128,7 @@ export const Disabled = () => (
 );
 
 export const Empty = () => (
-  <Combobox items={[]}>
+  <Combobox items={ [] }>
     <ComboboxLabel>Label</ComboboxLabel>
     <ComboboxControl />
     <ComboboxContent />
@@ -120,14 +137,14 @@ export const Empty = () => (
 
 export const Groups = () => (
   <Combobox
-    items={[
+    items={ [
       {
         label: 'Europe',
         options: [
           { label: 'France', value: 'fr' },
           { label: 'Germany', value: 'de', disabled: true },
           { label: 'Italy', value: 'it' },
-        ]
+        ],
       },
       {
         label: 'Asia', disabled: true,
@@ -135,10 +152,10 @@ export const Groups = () => (
           { label: 'China', value: 'cn' },
           { label: 'Japan', value: 'jp' },
           { label: 'Russia', value: 'ru' },
-        ]
+        ],
       },
       { label: 'World', value: 'world' },
-    ]}>
+    ] }>
     <ComboboxLabel>Label</ComboboxLabel>
     <ComboboxControl />
     <ComboboxContent />
@@ -148,14 +165,14 @@ export const Groups = () => (
 export const InFormField = () => (
   <FormField>
     <Combobox
-      items={[
-        { label: 'Dog', value:'dog' },
-        { label: 'Cat', value:'cat' },
-        { label: 'Hamster', value:'hamster' },
-        { label: 'Parrot', value:'parrot' },
-        { label: 'Spider', value:'spider' },
-        { label: 'Goldfish', value:'goldfish' },
-      ]}>
+      items={ [
+        { label: 'Dog', value: 'dog' },
+        { label: 'Cat', value: 'cat' },
+        { label: 'Hamster', value: 'hamster' },
+        { label: 'Parrot', value: 'parrot' },
+        { label: 'Spider', value: 'spider' },
+        { label: 'Goldfish', value: 'goldfish' },
+      ] }>
       <ComboboxLabel>Label</ComboboxLabel>
       <ComboboxControl />
       <ComboboxContent />
@@ -165,14 +182,14 @@ export const InFormField = () => (
 
 export const Placeholder = () => (
   <Combobox
-    items={[
-      { label: 'Dog', value:'dog' },
-      { label: 'Cat', value:'cat' },
-      { label: 'Hamster', value:'hamster', disabled: true },
-      { label: 'Parrot', value:'parrot' },
-      { label: 'Spider', value:'spider' },
-      { label: 'Goldfish', value:'goldfish' },
-    ]}>
+    items={ [
+      { label: 'Dog', value: 'dog' },
+      { label: 'Cat', value: 'cat' },
+      { label: 'Hamster', value: 'hamster', disabled: true },
+      { label: 'Parrot', value: 'parrot' },
+      { label: 'Spider', value: 'spider' },
+      { label: 'Goldfish', value: 'goldfish' },
+    ] }>
     <ComboboxLabel>Label</ComboboxLabel>
     <ComboboxControl placeholder="Please select" />
     <ComboboxContent />
@@ -182,14 +199,14 @@ export const Placeholder = () => (
 export const Readonly = () => (
   <Combobox
     readOnly
-    items={[
-      { label: 'Dog', value:'dog' },
-      { label: 'Cat', value:'cat' },
-      { label: 'Hamster', value:'hamster' },
-      { label: 'Parrot', value:'parrot' },
-      { label: 'Spider', value:'spider' },
-      { label: 'Goldfish', value:'goldfish' },
-    ]}>
+    items={ [
+      { label: 'Dog', value: 'dog' },
+      { label: 'Cat', value: 'cat' },
+      { label: 'Hamster', value: 'hamster' },
+      { label: 'Parrot', value: 'parrot' },
+      { label: 'Spider', value: 'spider' },
+      { label: 'Goldfish', value: 'goldfish' },
+    ] }>
     <ComboboxLabel>Label</ComboboxLabel>
     <ComboboxControl />
     <ComboboxContent />
@@ -197,79 +214,69 @@ export const Readonly = () => (
 );
 
 export const FlexEnd = () => (
-<div style={{ display: 'flex', height: '90vh', alignItems: 'flex-end' }}>
+  <div style={ { display: 'flex', height: '90vh', alignItems: 'flex-end' } }>
     <Combobox
-      items={[
-        { label: 'Dog', value:'dog' },
-        { label: 'Cat', value:'cat' },
-        { label: 'Hamster', value:'hamster', disabled: true },
-        { label: 'Parrot', value:'parrot' },
-        { label: 'Spider', value:'spider' },
-        { label: 'Goldfish', value:'goldfish' },
-      ]}>
-      <ComboboxLabel>Multiple simple</ComboboxLabel>
+      items={ [
+        { label: 'Dog', value: 'dog' },
+        { label: 'Cat', value: 'cat' },
+        { label: 'Hamster', value: 'hamster', disabled: true },
+        { label: 'Parrot', value: 'parrot' },
+        { label: 'Spider', value: 'spider' },
+        { label: 'Goldfish', value: 'goldfish' },
+      ] }>
+      <ComboboxLabel>Flex end</ComboboxLabel>
       <ComboboxControl placeholder="Please select" />
       <ComboboxContent />
     </Combobox>
   </div>
 );
 
-export const HighlightWithCustomRenderer = () => {
+export const Highlight = () => (
+  <Combobox
+    highlightResults={ true }
+    items={ [
+      { label: 'Dog', value: 'dog' },
+      { label: 'Cat', value: 'cat' },
+      { label: 'Hamster', value: 'hamster' },
+      { label: 'Parrot', value: 'parrot' },
+      { label: 'Spider', value: 'spider' },
+      { label: 'Goldfish', value: 'goldfish' },
+    ] }
+  >
+    <ComboboxLabel>Label</ComboboxLabel>
+    <ComboboxControl />
+    <ComboboxContent />
+  </Combobox>
+);
+
+export const CustomOptions = () => {
   const items = [
-    { label: 'Dog', value: 'dog', customRendererData: { extra: 'mammal' } },
-    { label: 'Cat', value: 'cat', customRendererData: { extra: 'mammal' } },
-    { label: 'Hamster', value: 'hamster', customRendererData: { extra: 'rodent' } },
-    { label: 'Parrot', value: 'parrot', customRendererData: { extra: 'bird' } },
-    { label: 'Spider', value: 'spider', customRendererData: { extra: 'arachnid' } },
-    { label: 'Goldfish', value: 'goldfish', customRendererData: { extra: 'fish' } },
+    { label: 'Apple', value: 'apple', customRendererData: { color: 'red', info: 'Fruit' } },
+    { label: 'Bananaspan', value: 'banana', customRendererData: { color: 'yellow', info: 'Fruit' } },
+    { label: 'Carrotspan', value: 'carrot', customRendererData: { color: 'orange', info: 'Vegetable' } },
+    { label: 'Broccoli', value: 'broccoli', customRendererData: { color: 'green', info: 'Vegetable' } },
+    { label: 'Blueberry', value: 'blueberry', customRendererData: { color: 'blue', info: 'Fruit' } },
   ];
 
-  function highlightLabel(label: string, query: string) {
-    if (!query) return label;
-    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    const parts = label.split(regex);
-    return parts.map((part, i) =>
-      regex.test(part)
-        ? <span key={i} className={style['highlight-custom']}>{part}</span>
-        : part
+  const customOptionRenderer = ({ label, customData }: ComboboxCustomOptionRendererArg) => {
+    const data = (customData || {}) as Record<string, unknown>;
+    const color = typeof data.color === 'string' ? data.color : undefined;
+    const info = typeof data.info === 'string' ? data.info : '';
+    return (
+      <span style={ { color } }>
+        { label } <span style={ { fontWeight: 'normal', fontSize: 12, color: '#888' } }>({ info })</span>
+      </span>
     );
-  }
-
-  const customOptionRenderer = ({ label, customData, highlightQuery }: ComboboxCustomOptionRendererArg) => (
-    <div>
-      {customData?.isNew && typeof customData.displayLabel === 'string' ? customData.displayLabel : highlightLabel(label, highlightQuery || '')}
-      {customData && typeof customData.extra === 'string' ? <em> ({customData.extra})</em> : null}
-    </div>
-  );
+  };
 
   return (
     <Combobox
-      items={items}
-      highlightResults
+      highlightResults={ true }
+      items={ items }
+      customOptionRenderer={ customOptionRenderer }
     >
-      <ComboboxLabel>Avec highlight + custom renderer</ComboboxLabel>
-      <ComboboxControl placeholder="Tapez pour filtrer et surligner" />
-      <ComboboxContent customOptionRenderer={customOptionRenderer} />
-    </Combobox>
-  );
-};
-
-export const HighlightNative = () => {
-  const items = [
-    { label: 'Dog', value: 'dog' },
-    { label: 'Cat', value: 'cat' },
-    { label: 'Hamster', value: 'hamster' },
-    { label: 'Parrot', value: 'parrot' },
-    { label: 'Spider', value: 'spider' },
-    { label: 'Goldfish', value: 'goldfish' },
-  ];
-  return (
-    <Combobox
-      items={items}
-      highlightResults
-    >
-      <ComboboxLabel>Avec highlight natif</ComboboxLabel>
-      <ComboboxControl placeholder="Tapez pour filtrer et surligner" />
+      <ComboboxLabel>Label</ComboboxLabel>
+      <ComboboxControl />
       <ComboboxContent />
     </Combobox>
   );

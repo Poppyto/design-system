@@ -2,32 +2,32 @@
 @use '../../../../../style/input';
 @use '../../../../../style/state';
 
-@layer ods {
+@layer ods-organisms {
   .combobox-control {
     display: flex;
-    transition: border-color 0.2s;
     margin: 0;
     border: var(--ods-border-width-sm) solid var(--ods-color-form-element-border-default);
     border-radius: var(--ods-border-radius-sm);
     width: 100%;
 
-    &--open-bottom[data-focus] {
+    &--open-bottom {
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }
 
-    &--open-top[data-focus] {
+    &--open-top {
       border-top-left-radius: 0;
       border-top-right-radius: 0;
     }
 
-    &-trigger {
+    &__trigger {
       border: none;
       background-color: transparent;
       padding: 0;
+      width: 100%;
     }
 
-    &-input {
+    &__input {
       outline: none;
       border: none;
       background: transparent;
@@ -37,5 +37,10 @@
     &[data-focus] {
       @include focus.ods-focus();
     }
+
+    &[data-disabled] {
+      @include state.ods-is-disabled();
+    }
   }
+
 }

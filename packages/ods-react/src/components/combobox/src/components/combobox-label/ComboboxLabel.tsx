@@ -3,7 +3,8 @@ import classNames from 'classnames';
 import { type ComponentPropsWithRef, type FC, type JSX, forwardRef } from 'react';
 import style from './comboboxLabel.module.scss';
 
-interface ComboboxLabelProp extends ComponentPropsWithRef<'label'> {}
+interface ComboboxLabelProp extends ComponentPropsWithRef<'label'> {
+}
 
 const ComboboxLabel: FC<ComboboxLabelProp> = forwardRef(({
   children,
@@ -12,7 +13,7 @@ const ComboboxLabel: FC<ComboboxLabelProp> = forwardRef(({
 }, ref): JSX.Element => {
   return (
     <VendorCombobox.Label
-      className={ classNames(style['combobox-label'], className) }
+      className={ classNames(style[ 'combobox-label' ], className) }
       ref={ ref }
       { ...props }>
       { children }
