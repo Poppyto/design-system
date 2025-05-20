@@ -1,7 +1,8 @@
-import { Combobox as VendorCombobox, useComboboxContext } from '@ark-ui/react/combobox';
+import { Combobox as VendorCombobox, useComboboxContext as useVendorComboboxContext } from '@ark-ui/react/combobox';
 import classNames from 'classnames';
 import { type ComponentPropsWithRef, type FC, type JSX, forwardRef } from 'react';
 import { Input } from '../../../../input/src';
+import { useCombobox } from '../../context/useCombobox';
 import style from './comboboxControl.module.scss';
 
 interface ComboboxControlProp extends ComponentPropsWithRef<'button'> {
@@ -17,10 +18,12 @@ const ComboboxControl: FC<ComboboxControlProp> = forwardRef(({
   placeholder,
   ...props
 }, ref): JSX.Element | null => {
-  const context = useComboboxContext();
-  const { setValue, setInputValue } = context;
+  const vendorContext = useVendorComboboxContext();
 
-  const { getContentProps } = context;
+  const context = useCombobox();
+  const { setValue, setInputValue, inputValue } = context;
+
+  const { getContentProps } = vendorContext;
   const contentProps = getContentProps() as {
     'data-placement'?: 'bottom' | 'top';
     'data-state'?: 'open' | 'closed';
@@ -43,6 +46,10 @@ const ComboboxControl: FC<ComboboxControlProp> = forwardRef(({
     setInputValue && setInputValue('');
   };
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setInputValue && setInputValue(event.target.value);
+  };
+
   return (
     <VendorCombobox.Control
       className={ classNames(
@@ -58,6 +65,8 @@ const ComboboxControl: FC<ComboboxControlProp> = forwardRef(({
         { ...props }>
         <VendorCombobox.Input asChild>
           <Input
+            value={ inputValue }
+            onChange={ handleInputChange }
             className={ style[ 'combobox-control__input' ] }
             clearable={ clearable }
             loading={ loading }

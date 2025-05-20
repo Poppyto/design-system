@@ -3,14 +3,14 @@ import {
   Combobox as VendorCombobox,
   createListCollection,
 } from '@ark-ui/react/combobox';
-import { type ComponentPropsWithRef, type FC, type JSX, forwardRef, useMemo, useState } from 'react';
+import { type ComponentPropsWithRef, type FC, type JSX, forwardRef, useEffect, useMemo, useState } from 'react';
 import {
   type ComboboxCustomOptionRendererArg,
   type ComboboxItem,
   type ComboboxOptionItem,
   ComboboxProvider,
 } from '../../context/useCombobox';
-import { getFlatItemsWithDisabled } from '../../controller/combobox';
+import { createValueToLabelMap, getFlatItemsWithDisabled } from '../../controller/combobox';
 
 type ComboboxProp = Omit<ComponentPropsWithRef<'div'>, 'onSelect'> & {
   addNewElementLabel?: string;
@@ -50,14 +50,11 @@ const Combobox: FC<ComboboxProp> = forwardRef(({
   value,
   ...props
 }, ref): JSX.Element => {
-
   const [inputValue, setInputValue] = useState('');
-  const [selectedValues, setSelectedValues] = useState<string[]>(value ?? defaultValue ?? []);
+  const [uncontrolledValues, setUncontrolledValues] = useState<string[]>(defaultValue ?? []);
 
-  const handleInputValueChange = (details: { inputValue: string }): void => {
-    setInputValue(details.inputValue);
-    onInputValueChange?.(details);
-  };
+  const isControlled = value !== undefined;
+  const selectedValues = isControlled ? value : uncontrolledValues;
 
   const flatItems = useMemo(() => {
     return getFlatItemsWithDisabled(items, inputValue, {
@@ -65,53 +62,83 @@ const Combobox: FC<ComboboxProp> = forwardRef(({
       customRenderer: customOptionRenderer,
       selectedValues,
     });
-  }, [items, inputValue, allowNewElement, selectedValues, customOptionRenderer]);
+  }, [allowNewElement, customOptionRenderer, inputValue, items, selectedValues]);
 
-  const collection = useMemo(() =>
-    createListCollection({
+  const collection = useMemo(() => {
+    return createListCollection({
       groupBy: (item) => item.group || '',
       items: flatItems,
-    }),
-  [flatItems],
-  );
+    });
+  }, [flatItems]);
+
+  const valueToLabelMap = useMemo(() => createValueToLabelMap(items), [items]);
+
+  useEffect(() => {
+    if (selectedValues && selectedValues.length > 0) {
+      const val = selectedValues[0];
+      const label = valueToLabelMap.get(val) || val;
+      setInputValue(label);
+    } else {
+      setInputValue('');
+    }
+  }, [selectedValues, valueToLabelMap]);
+
+  const handleInputValueChange = (details: { inputValue: string }): void => {
+    setInputValue(details.inputValue);
+    onInputValueChange?.(details);
+  };
 
   const handleValueChange = (details: ComboboxValueChangeDetails<ComboboxOptionItem>): void => {
-    setSelectedValues(details.value);
+    if (!isControlled) {
+      setUncontrolledValues(details.value);
+    }
     onValueChange?.(details);
+  };
+
+  const setValue = (newValues: string[]): void => {
+    if (!isControlled) {
+      setUncontrolledValues(newValues);
+    }
+
+    onValueChange?.({
+      items: flatItems.filter((item) => newValues.includes(item.value)),
+      value: newValues,
+    });
   };
 
   return (
     <ComboboxProvider
-      customOptionRenderer={ customOptionRenderer }
-      highlightResults={ highlightResults }
-      inputValue={ inputValue }
-      noResultLabel={ noResultLabel }>
+      customOptionRenderer={customOptionRenderer}
+      highlightResults={highlightResults}
+      inputValue={inputValue}
+      noResultLabel={noResultLabel}
+      setInputValue={setInputValue}
+      setValue={setValue}>
       <VendorCombobox.Root
-        className={ className }
-        collection={ collection }
-        defaultValue={ defaultValue }
-        disabled={ disabled }
-        invalid={ invalid }
-        loopFocus={ true }
-        name={ name }
-        onInputValueChange={ handleInputValueChange }
-        onValueChange={ handleValueChange }
-        positioning={ {
+        className={className}
+        collection={collection}
+        disabled={disabled}
+        invalid={invalid}
+        loopFocus={true}
+        name={name}
+        onInputValueChange={handleInputValueChange}
+        onValueChange={handleValueChange}
+        positioning={{
           gutter: -1,
           sameWidth: true,
-        } }
-        readOnly={ readOnly }
-        ref={ ref }
-        required={ required }
-        value={ value }
-        { ...props }>
-        { children }
+        }}
+        readOnly={readOnly}
+        ref={ref}
+        required={required}
+        value={selectedValues}
+        {...props}>
+        {children}
       </VendorCombobox.Root>
     </ComboboxProvider>
   );
 });
 
-Combobox.displayName = 'ComboboxOption';
+Combobox.displayName = 'Combobox';
 
 export {
   Combobox,

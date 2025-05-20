@@ -2,8 +2,12 @@ import { type ReactNode, createContext, useContext } from 'react';
 
 interface ComboboxContextType {
   customOptionRenderer?: (arg: ComboboxCustomOptionRendererArg) => JSX.Element;
+  getContentProps?: () => Record<string, unknown>;
   highlightResults?: boolean;
+  inputValue?: string;
   noResultLabel?: string;
+  setInputValue?: (value: string) => void;
+  setValue?: (value: string[]) => void;
 }
 
 type ComboboxCustomGroupRendererArg = {
@@ -28,20 +32,23 @@ type ComboboxItem = ComboboxOptionItem | ComboboxGroupItem;
 type ComboboxOptionItem = {
   label: string;
   value: string;
-  disabled?: boolean;
   customRendererData?: Record<string, unknown>;
-  /** @internal */
-  isNew?: boolean;
+  disabled?: boolean;
   /** @internal */
   isInGroup?: boolean;
+  /** @internal */
+  isNew?: boolean;
 };
 
 interface ComboboxProviderProps {
   children: ReactNode;
   customOptionRenderer?: (arg: ComboboxCustomOptionRendererArg) => JSX.Element;
+  getContentProps?: () => Record<string, unknown>;
   highlightResults?: boolean;
   inputValue?: string;
   noResultLabel?: string;
+  setInputValue?: (value: string) => void;
+  setValue?: (value: string[]) => void;
 }
 
 const ComboboxContext = createContext<ComboboxContextType>({});
@@ -53,11 +60,23 @@ function useCombobox(): ComboboxContextType {
 const ComboboxProvider: React.FC<ComboboxProviderProps> = ({
   children,
   customOptionRenderer,
+  getContentProps,
   highlightResults,
+  inputValue,
   noResultLabel,
+  setInputValue,
+  setValue,
 }) => {
   return (
-    <ComboboxContext.Provider value={ { customOptionRenderer, highlightResults, noResultLabel } }>
+    <ComboboxContext.Provider value={{
+      customOptionRenderer,
+      getContentProps,
+      highlightResults,
+      inputValue,
+      noResultLabel,
+      setInputValue,
+      setValue,
+    }}>
       { children }
     </ComboboxContext.Provider>
   );

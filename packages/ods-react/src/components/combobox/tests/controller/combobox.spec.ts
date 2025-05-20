@@ -1,6 +1,6 @@
-import { getFlatItemsWithDisabled, doesOptionMatch, isGroup, shouldAddNewElement, shouldOptionBeDisabled, flattenGroupWithDisabled, flattenItemsWithDisabled, highlightInElement } from '../../src/controller/combobox';
-import { type ComboboxItem, type ComboboxOptionItem, type ComboboxCustomOptionRendererArg, type ComboboxGroupItem } from '../../src/context/useCombobox';
-import { createElement, type ReactElement } from 'react';
+import { type ReactElement, createElement } from 'react';
+import { type ComboboxCustomOptionRendererArg, type ComboboxGroupItem, type ComboboxItem, type ComboboxOptionItem } from '../../src/context/useCombobox';
+import { doesOptionMatch, flattenGroupWithDisabled, flattenItemsWithDisabled, getFlatItemsWithDisabled, highlightInElement, isGroup, shouldAddNewElement, shouldOptionBeDisabled } from '../../src/controller/combobox';
 
 describe('Combobox controller', () => {
   describe('isGroup', () => {
@@ -9,8 +9,8 @@ describe('Combobox controller', () => {
         label: 'Group 1',
         options: [
           { label: 'Option 1', value: '1' },
-          { label: 'Option 2', value: '2' }
-        ]
+          { label: 'Option 2', value: '2' },
+        ],
       };
       expect(isGroup(groupItem)).toBe(true);
     });
@@ -18,7 +18,7 @@ describe('Combobox controller', () => {
     it('should return false for option items', () => {
       const optionItem: ComboboxItem = {
         label: 'Option 1',
-        value: '1'
+        value: '1',
       };
       expect(isGroup(optionItem)).toBe(false);
     });
@@ -27,7 +27,7 @@ describe('Combobox controller', () => {
   describe('doesOptionMatch', () => {
     const option: ComboboxOptionItem = {
       label: 'Test Option',
-      value: 'test'
+      value: 'test',
     };
 
     it('should match when input is part of the label', () => {
@@ -42,12 +42,12 @@ describe('Combobox controller', () => {
 
     it('should handle custom renderer', () => {
       const customOption: ComboboxOptionItem = {
+        customRendererData: { info: 'Custom Info' },
         label: 'Test Option',
         value: 'test',
-        customRendererData: { info: 'Custom Info' }
       };
 
-      const customRenderer = (arg: ComboboxCustomOptionRendererArg) => {
+      const customRenderer = (arg: ComboboxCustomOptionRendererArg): ReactElement => {
         return createElement('div', null, `${arg.label} - ${arg.customData?.info || ''}`);
       };
 
@@ -60,7 +60,7 @@ describe('Combobox controller', () => {
   describe('shouldAddNewElement', () => {
     const flatItems: (ComboboxOptionItem & { group?: string })[] = [
       { label: 'Option 1', value: '1' },
-      { label: 'Option 2', value: '2' }
+      { label: 'Option 2', value: '2' },
     ];
 
     it('should return true when conditions are met', () => {
@@ -91,10 +91,10 @@ describe('Combobox controller', () => {
         label: 'Group 1',
         options: [
           { label: 'Option 1', value: '1' },
-          { label: 'Option 2', value: '2', disabled: true }
-        ]
+          { disabled: true, label: 'Option 2', value: '2' },
+        ],
       },
-      { label: 'Option 3', value: '3' }
+      { label: 'Option 3', value: '3' },
     ];
 
     it('should flatten items and handle disabled state', () => {
@@ -143,7 +143,7 @@ describe('Combobox controller', () => {
   describe('shouldOptionBeDisabled', () => {
     const option: ComboboxOptionItem = {
       label: 'Test Option',
-      value: 'test'
+      value: 'test',
     };
 
     it('should return true when option does not match input', () => {
@@ -161,12 +161,12 @@ describe('Combobox controller', () => {
 
     it('should handle custom renderer', () => {
       const customOption: ComboboxOptionItem = {
+        customRendererData: { info: 'Custom Info' },
         label: 'Test Option',
         value: 'test',
-        customRendererData: { info: 'Custom Info' }
       };
 
-      const customRenderer = (arg: ComboboxCustomOptionRendererArg) => {
+      const customRenderer = (arg: ComboboxCustomOptionRendererArg): ReactElement => {
         return createElement('div', null, `${arg.label} - ${arg.customData?.info || ''}`);
       };
 
@@ -180,8 +180,8 @@ describe('Combobox controller', () => {
       label: 'Group 1',
       options: [
         { label: 'Option 1', value: '1' },
-        { label: 'Option 2', value: '2', disabled: true }
-      ]
+        { disabled: true, label: 'Option 2', value: '2' },
+      ],
     };
 
     it('should return all options when group has valid options', () => {
@@ -196,7 +196,7 @@ describe('Combobox controller', () => {
     it('should return empty array when all options are disabled', () => {
       const allDisabledGroup = {
         ...group,
-        options: group.options.map(opt => ({ ...opt, disabled: true }))
+        options: group.options.map((opt) => ({ ...opt, disabled: true })),
       };
       const result = flattenGroupWithDisabled(allDisabledGroup, '');
       expect(result).toHaveLength(0);
@@ -216,10 +216,10 @@ describe('Combobox controller', () => {
         label: 'Group 1',
         options: [
           { label: 'Option 1', value: '1' },
-          { label: 'Option 2', value: '2', disabled: true }
-        ]
+          { disabled: true, label: 'Option 2', value: '2' },
+        ],
       },
-      { label: 'Option 3', value: '3' }
+      { label: 'Option 3', value: '3' },
     ];
 
     it('should flatten items and handle disabled state', () => {

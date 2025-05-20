@@ -4,8 +4,18 @@ import { getElementText } from '../../../../utils/element';
 import style from '../components/combobox-option/comboboxOption.module.scss';
 import { type ComboboxGroupItem, type ComboboxItem, type ComboboxOptionItem } from '../context/useCombobox';
 
-function isGroup(item: ComboboxItem): item is ComboboxGroupItem {
-  return 'options' in item;
+function createValueToLabelMap(items: ComboboxItem[]): Map<string, string> {
+  const map = new Map<string, string>();
+
+  items.forEach((item) => {
+    if (isGroup(item)) {
+      item.options.forEach((option) => map.set(option.value, option.label));
+    } else {
+      map.set(item.value, item.label);
+    }
+  });
+
+  return map;
 }
 
 function doesOptionMatch(
@@ -22,14 +32,6 @@ function doesOptionMatch(
     return text.toLowerCase().includes(inputValue.toLowerCase());
   }
   return option.label.toLowerCase().includes(inputValue.toLowerCase());
-}
-
-function shouldOptionBeDisabled(
-  option: ComboboxOptionItem,
-  inputValue: string,
-  customRenderer?: (arg: ComboboxCustomOptionRendererArg) => JSX.Element,
-): boolean {
-  return !doesOptionMatch(option, inputValue, customRenderer) || !!option.disabled;
 }
 
 function flattenGroupWithDisabled(
@@ -63,21 +65,6 @@ function flattenItemsWithDisabled(
   });
 }
 
-function shouldAddNewElement(
-  allowNewElement: boolean,
-  inputValue: string,
-  flatItems: (ComboboxOptionItem & { group?: string })[],
-  selectedValues: string[],
-): boolean {
-  const normalizedInput = inputValue.trim();
-  return (
-    allowNewElement &&
-    normalizedInput !== '' &&
-    !flatItems.some((opt) => opt.label === normalizedInput) &&
-    !selectedValues.some((val) => val.trim() === normalizedInput)
-  );
-}
-
 type GetFlatItemsOptions = {
   allowNewElement: boolean;
   selectedValues: string[];
@@ -106,6 +93,10 @@ function getFlatItemsWithDisabled(
   return baseItems;
 }
 
+function getLabelFromValue(value: string, items: ComboboxItem[]): string {
+  return createValueToLabelMap(items).get(value) || value;
+}
+
 function highlightInElement(element: ReactNode, search: string): ReactNode {
   if (!search) {
     return element;
@@ -131,13 +122,42 @@ function highlightInElement(element: ReactNode, search: string): ReactNode {
   return React.cloneElement(element as ReactElement, undefined, highlighted);
 }
 
+function isGroup(item: ComboboxItem): item is ComboboxGroupItem {
+  return 'options' in item;
+}
+
+function shouldAddNewElement(
+  allowNewElement: boolean,
+  inputValue: string,
+  flatItems: (ComboboxOptionItem & { group?: string })[],
+  selectedValues: string[],
+): boolean {
+  const normalizedInput = inputValue.trim();
+  return (
+    allowNewElement &&
+    normalizedInput !== '' &&
+    !flatItems.some((opt) => opt.label === normalizedInput) &&
+    !selectedValues.some((val) => val.trim() === normalizedInput)
+  );
+}
+
+function shouldOptionBeDisabled(
+  option: ComboboxOptionItem,
+  inputValue: string,
+  customRenderer?: (arg: ComboboxCustomOptionRendererArg) => JSX.Element,
+): boolean {
+  return !doesOptionMatch(option, inputValue, customRenderer) || !!option.disabled;
+}
+
 export {
-  isGroup,
+  createValueToLabelMap,
   doesOptionMatch,
-  shouldOptionBeDisabled,
   flattenGroupWithDisabled,
   flattenItemsWithDisabled,
-  shouldAddNewElement,
   getFlatItemsWithDisabled,
+  getLabelFromValue,
   highlightInElement,
+  isGroup,
+  shouldAddNewElement,
+  shouldOptionBeDisabled,
 };
