@@ -31,7 +31,7 @@ type ComboboxProp = Omit<ComponentPropsWithRef<'div'>, 'onSelect'> & {
 };
 
 const Combobox: FC<ComboboxProp> = forwardRef(({
-  addNewElementLabel,
+  addNewElementLabel = 'Add ',
   allowNewElement = true,
   children,
   className,
@@ -75,7 +75,7 @@ const Combobox: FC<ComboboxProp> = forwardRef(({
 
   useEffect(() => {
     if (selectedValues && selectedValues.length > 0) {
-      const val = selectedValues[0];
+      const val = selectedValues[ 0 ];
       const label = valueToLabelMap.get(val) || val;
       setInputValue(label);
     } else {
@@ -108,31 +108,33 @@ const Combobox: FC<ComboboxProp> = forwardRef(({
 
   return (
     <ComboboxProvider
-      customOptionRenderer={customOptionRenderer}
-      highlightResults={highlightResults}
-      inputValue={inputValue}
-      noResultLabel={noResultLabel}
-      setInputValue={setInputValue}
-      setValue={setValue}>
+      addNewElementLabel={ addNewElementLabel }
+      customOptionRenderer={ customOptionRenderer }
+      highlightResults={ highlightResults }
+      inputValue={ inputValue }
+      noResultLabel={ noResultLabel }
+      setInputValue={ setInputValue }
+      setValue={ setValue }>
       <VendorCombobox.Root
-        className={className}
-        collection={collection}
-        disabled={disabled}
-        invalid={invalid}
-        loopFocus={true}
-        name={name}
-        onInputValueChange={handleInputValueChange}
-        onValueChange={handleValueChange}
-        positioning={{
+        className={ className }
+        collection={ collection }
+        disabled={ disabled }
+        invalid={ invalid }
+        loopFocus={ true }
+        name={ name }
+        onInputValueChange={ handleInputValueChange }
+        onValueChange={ handleValueChange }
+        selectionBehavior="preserve"
+        positioning={ {
           gutter: -1,
           sameWidth: true,
-        }}
-        readOnly={readOnly}
-        ref={ref}
-        required={required}
-        value={selectedValues}
-        {...props}>
-        {children}
+        } }
+        readOnly={ readOnly }
+        ref={ ref }
+        required={ required }
+        value={ selectedValues }
+        { ...props }>
+        { children }
       </VendorCombobox.Root>
     </ComboboxProvider>
   );

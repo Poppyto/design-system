@@ -15,7 +15,7 @@ interface ComboboxOptionProp {
 }
 
 const ComboboxOption: FC<ComboboxOptionProp> = ({
-  addNewElementLabel = 'Add ',
+  addNewElementLabel,
   className,
   customOptionRenderer,
   isInGroup = false,

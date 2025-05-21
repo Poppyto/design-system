@@ -16,14 +16,13 @@ interface ComboboxContentProp {
 }
 
 const ComboboxContent: FC<ComboboxContentProp> = forwardRef(({
-  addNewElementLabel,
   className,
   ...props
 }, ref): JSX.Element => {
   const { collection } = useComboboxContext();
   const localRef = useRef<HTMLDivElement>(null);
   const contentRef = (ref as React.RefObject<HTMLDivElement>) || localRef;
-  const { customOptionRenderer, noResultLabel } = useCombobox();
+  const { addNewElementLabel, customOptionRenderer, noResultLabel } = useCombobox();
 
   const hasEnabledOption = collection.items.some(
     (item: Record<string, unknown>) => typeof item === 'object' && item !== null && !('disabled' in item && item.disabled) && !('isNew' in item && item.isNew),

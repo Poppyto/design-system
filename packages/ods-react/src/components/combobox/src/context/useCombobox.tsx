@@ -1,6 +1,7 @@
 import { type ReactNode, createContext, useContext } from 'react';
 
 interface ComboboxContextType {
+  addNewElementLabel?: string,
   customOptionRenderer?: (arg: ComboboxCustomOptionRendererArg) => JSX.Element;
   getContentProps?: () => Record<string, unknown>;
   highlightResults?: boolean;
@@ -41,6 +42,7 @@ type ComboboxOptionItem = {
 };
 
 interface ComboboxProviderProps {
+  addNewElementLabel?: string,
   children: ReactNode;
   customOptionRenderer?: (arg: ComboboxCustomOptionRendererArg) => JSX.Element;
   getContentProps?: () => Record<string, unknown>;
@@ -58,6 +60,7 @@ function useCombobox(): ComboboxContextType {
 }
 
 const ComboboxProvider: React.FC<ComboboxProviderProps> = ({
+  addNewElementLabel,
   children,
   customOptionRenderer,
   getContentProps,
@@ -69,6 +72,7 @@ const ComboboxProvider: React.FC<ComboboxProviderProps> = ({
 }) => {
   return (
     <ComboboxContext.Provider value={{
+      addNewElementLabel,
       customOptionRenderer,
       getContentProps,
       highlightResults,

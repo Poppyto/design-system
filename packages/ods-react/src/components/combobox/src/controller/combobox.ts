@@ -93,10 +93,6 @@ function getFlatItemsWithDisabled(
   return baseItems;
 }
 
-function getLabelFromValue(value: string, items: ComboboxItem[]): string {
-  return createValueToLabelMap(items).get(value) || value;
-}
-
 function highlightInElement(element: ReactNode, search: string): ReactNode {
   if (!search) {
     return element;
@@ -155,7 +151,6 @@ export {
   flattenGroupWithDisabled,
   flattenItemsWithDisabled,
   getFlatItemsWithDisabled,
-  getLabelFromValue,
   highlightInElement,
   isGroup,
   shouldAddNewElement,
