@@ -33,7 +33,6 @@ const ComboboxContent: FC<ComboboxContentProp> = forwardRef(({
       <VendorCombobox.Positioner>
         <VendorCombobox.Content
           className={ classNames(style[ 'combobox-content' ], className) }
-          data-empty={ collection.size === 0 }
           ref={ contentRef }
           { ...props }
         >

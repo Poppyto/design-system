@@ -69,6 +69,7 @@ export const Demo: StoryObj = {
     clearable: {
       table: {
         category: CONTROL_CATEGORY.general,
+        type: { summary: 'boolean' },
       },
       control: 'boolean',
     },
@@ -105,6 +106,7 @@ export const Demo: StoryObj = {
     loading: {
       table: {
         category: CONTROL_CATEGORY.general,
+        type: { summary: 'boolean' },
       },
       control: 'boolean',
     },
