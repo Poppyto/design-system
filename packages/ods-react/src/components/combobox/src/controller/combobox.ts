@@ -132,7 +132,7 @@ function shouldAddNewElement(
   return (
     allowNewElement &&
     normalizedInput !== '' &&
-    !flatItems.some((opt) => opt.label === normalizedInput) &&
+    !flatItems.some((opt) => opt.label.toLowerCase() === normalizedInput.toLowerCase()) &&
     !selectedValues.some((val) => val.trim() === normalizedInput)
   );
 }
